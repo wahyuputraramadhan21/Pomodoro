@@ -34,7 +34,7 @@
         }
     </style>
 </head>
-<body class="light-mode">
+<body class="dark-mode">
 
     <div class="min-h-screen flex flex-col items-center justify-center p-4">
         <header class="w-full max-w-4xl flex justify-between items-center mb-10">
@@ -43,17 +43,13 @@
                 <button id="menu-toggle-btn" class="p-2 rounded-full transition-colors duration-300 bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-white">
                      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                 </button>
-                <button id="theme-toggle" class="p-2 rounded-full transition-colors duration-300 bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-white">
-                    <svg id="sun-icon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-                    <svg id="moon-icon" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
-                </button>
             </div>
         </header>
 
         <main class="w-full max-w-4xl flex flex-col items-center justify-center">
             <!-- Elemen untuk menampilkan tugas dan siklus, ditaruh di luar timer -->
             <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-lg transition-colors duration-300 mb-4 text-center">
-                <div id="current-task-display" class="text-lg font-semibold">Tugas: Tidak ada tugas terpilih</div>
+                <div id="current-task-display" class="text-lg font-semibold">Tidak ada tugas terpilih</div>
                 <div id="cycle-info" class="text-md font-normal mt-1">Siklus: 0 / 4</div>
             </div>
             
@@ -166,10 +162,7 @@
         const pauseBtn = document.getElementById('pause-btn');
         const resetBtn = document.getElementById('reset-btn');
         const skipBtn = document.getElementById('skip-btn');
-        const themeToggleBtn = document.getElementById('theme-toggle');
         const body = document.body;
-        const sunIcon = document.getElementById('sun-icon');
-        const moonIcon = document.getElementById('moon-icon');
 
         const menuToggleBtn = document.getElementById('menu-toggle-btn');
         const sidebarMenu = document.getElementById('sidebar-menu');
@@ -321,53 +314,6 @@
             audio.play();
         }
 
-        function toggleTheme() {
-            body.classList.toggle('dark-mode');
-            body.classList.toggle('light-mode');
-            sunIcon.classList.toggle('hidden');
-            moonIcon.classList.toggle('hidden');
-        }
-
-        function addTask() {
-            const taskText = newTaskInput.value.trim();
-            if (taskText === '') return;
-
-            const taskItem = document.createElement('div');
-            taskItem.className = 'flex items-center justify-between p-3 bg-gray-100 dark:bg-gray-700 rounded-lg cursor-pointer task-item';
-            taskItem.innerHTML = `
-                <span class="flex-grow">${taskText}</span>
-                <div class="flex items-center space-x-2">
-                    <button class="complete-task-btn text-green-500 hover:text-green-600 transition-colors">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                    </button>
-                    <button class="delete-task-btn text-red-500 hover:text-red-600 transition-colors">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                    </button>
-                </div>
-            `;
-            
-            taskList.appendChild(taskItem);
-            newTaskInput.value = '';
-
-            // Menambahkan event listener untuk memilih tugas
-            taskItem.addEventListener('click', () => {
-                const allTasks = document.querySelectorAll('.task-item');
-                allTasks.forEach(task => task.classList.remove('bg-blue-200', 'dark:bg-blue-600'));
-                taskItem.classList.add('bg-blue-200', 'dark:bg-blue-600');
-                currentTask = taskText;
-                currentTaskDisplay.textContent = `Tugas: ${currentTask}`;
-            });
-
-            taskItem.querySelector('.complete-task-btn').addEventListener('click', (e) => {
-                e.stopPropagation(); // Mencegah klik menyebar ke taskItem
-                taskItem.querySelector('span').classList.toggle('line-through');
-            });
-            taskItem.querySelector('.delete-task-btn').addEventListener('click', (e) => {
-                e.stopPropagation(); // Mencegah klik menyebar ke taskItem
-                taskList.removeChild(taskItem);
-            });
-        }
-
         function toggleAmbientSound() {
             const sound = ambientSoundSelect.value;
             if (ambientAudio) {
@@ -400,12 +346,51 @@
         function toggleMenu() {
             sidebarMenu.classList.toggle('translate-x-full');
         }
+        
+        function addTask() {
+            const taskText = newTaskInput.value.trim();
+            if (taskText === '') return;
+
+            const taskItem = document.createElement('div');
+            taskItem.className = 'flex items-center justify-between p-3 bg-gray-100 dark:bg-gray-700 rounded-lg cursor-pointer task-item';
+            taskItem.innerHTML = `
+                <span class="flex-grow">${taskText}</span>
+                <div class="flex items-center space-x-2">
+                    <button class="complete-task-btn text-green-500 hover:text-green-600 transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    </button>
+                    <button class="delete-task-btn text-red-500 hover:text-red-600 transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+            `;
+            
+            taskList.appendChild(taskItem);
+            newTaskInput.value = '';
+
+            // Menambahkan event listener untuk memilih tugas
+            taskItem.addEventListener('click', () => {
+                const allTasks = document.querySelectorAll('.task-item');
+                allTasks.forEach(task => task.classList.remove('bg-blue-200', 'dark:bg-blue-600'));
+                taskItem.classList.add('bg-blue-200', 'dark:bg-blue-600');
+                currentTask = taskText;
+                currentTaskDisplay.textContent = currentTask;
+            });
+
+            taskItem.querySelector('.complete-task-btn').addEventListener('click', (e) => {
+                e.stopPropagation(); // Mencegah klik menyebar ke taskItem
+                taskItem.querySelector('span').classList.toggle('line-through');
+            });
+            taskItem.querySelector('.delete-task-btn').addEventListener('click', (e) => {
+                e.stopPropagation(); // Mencegah klik menyebar ke taskItem
+                taskList.removeChild(taskItem);
+            });
+        }
 
         startBtn.addEventListener('click', startTimer);
         pauseBtn.addEventListener('click', pauseTimer);
         resetBtn.addEventListener('click', resetTimer);
         skipBtn.addEventListener('click', () => endSession());
-        themeToggleBtn.addEventListener('click', toggleTheme);
         addTaskBtn.addEventListener('click', addTask);
         newTaskInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
